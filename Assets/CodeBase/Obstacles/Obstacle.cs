@@ -3,18 +3,29 @@ using UnityEngine;
 
 namespace CodeBase.Obstacles
 {
-    public class Obstacle : MonoBehaviour
+    public class Obstacle : MonoBehaviour,IInitializable
     {
+        [SerializeField] private float collisionDistance = 1.0f;
         [SerializeField] private int _damage;
         
+        private Rocket _rocket;
         private const string PlayerTag = "Player";
-        private void OnTriggerEnter(Collider other)
+        private bool _isInit;
+        
+        public void Initialize()
         {
-            if (other.CompareTag(PlayerTag))
+            _rocket =  GameObject.FindWithTag(PlayerTag).GetComponent<Rocket>();
+        }
+        
+        private void Update()
+        {
+            float distance = Vector3.Distance(_rocket.transform.position, transform.position);
+
+            if (distance < collisionDistance)
             {
-                other.gameObject.GetComponent<IDamagable>().ApplyDamage(_damage);
+                _rocket.ApplyDamage(_damage);
+                gameObject.SetActive(false);
             }
-            Debug.Log("Collision");
         }
     }
 }

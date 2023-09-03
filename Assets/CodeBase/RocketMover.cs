@@ -8,17 +8,18 @@ namespace CodeBase
         [SerializeField] private float _initialThrust = 1000f;
         [SerializeField] private float _maxSpeed = 20f;
         [SerializeField] private float _rotationSpeed = 5f;
+        [SerializeField] private Vector3 _currentSpeed;
 
         private readonly float _maxAirResistance = 2f;
         private readonly float _minAirResistance = 0.2f;
 
-        [SerializeField] private Vector3 _currentVelocity;
         private float _sideVelocity;
         private float _rotateVelocity;
         private bool _canMove;
         private Rocket _rocket;
         
         public bool CanMove { get => _canMove; set => _canMove = value; }
+        public Vector3 CurrentSpeed => _currentSpeed;
 
         private const float Gravity = 9.81f;
 
@@ -51,10 +52,10 @@ namespace CodeBase
         private void ApplyThrust()
         {
             float thrustForce = (_initialThrust * _rocket.CurrentFuel) / (_rocket.Mass + _rocket.FuelTankMass) * Time.fixedDeltaTime;
-            _currentVelocity += transform.up * thrustForce;
+            _currentSpeed += transform.up * thrustForce;
 
             float airResistance = GetAirResistance();
-            _currentVelocity -= _currentVelocity.normalized * airResistance * Time.fixedDeltaTime;
+            _currentSpeed -= _currentSpeed.normalized * airResistance * Time.fixedDeltaTime;
 
             float sideForce = -_rotateVelocity * _rotationSpeed * Time.fixedDeltaTime;
             _sideVelocity += sideForce;
@@ -63,8 +64,8 @@ namespace CodeBase
 
         private void UpdatePosition()
         {
-            _currentVelocity = Vector3.ClampMagnitude(_currentVelocity, _maxSpeed);
-            transform.position += _currentVelocity * Time.fixedDeltaTime;
+            _currentSpeed = Vector3.ClampMagnitude(_currentSpeed, _maxSpeed);
+            transform.position += _currentSpeed * Time.fixedDeltaTime;
         }
 
         private void ConsumeFuel()
@@ -89,7 +90,7 @@ namespace CodeBase
         private void ApplyGravity()
         {
             float gravity = CalculateAdjustedGravity();
-            _currentVelocity += Vector3.down * gravity * Time.fixedDeltaTime;
+            _currentSpeed += Vector3.down * gravity * Time.fixedDeltaTime;
         }
         
         private float CalculateAdjustedGravity()

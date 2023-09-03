@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CodeBase.Interfaces;
+using CodeBase.Obstacles;
 using UnityEngine;
+using IInitializable = Unity.VisualScripting.IInitializable;
 
 public class ObstaclePool : MonoBehaviour, IInitializableComponent<GameObject>
 {
@@ -9,7 +11,7 @@ public class ObstaclePool : MonoBehaviour, IInitializableComponent<GameObject>
 
     private Camera _camera;
 
-    private List<GameObject> _pool = new();
+    private List<GameObject> _pool = new List<GameObject>();
 
     public void InitializeComponent(GameObject prefab)
     {
@@ -19,8 +21,16 @@ public class ObstaclePool : MonoBehaviour, IInitializableComponent<GameObject>
         {
             GameObject spawned = Instantiate(prefab, new Vector2(transform.position.x + 2, transform.position.y), Quaternion.identity);
             spawned.SetActive(false);
+            spawned.GetComponent<Obstacle>().Initialize();
 
             _pool.Add(spawned);
+        }
+    }
+    public void ResetPool()
+    {
+        foreach (var item in _pool)
+        {
+            item.SetActive(false);
         }
     }
 
@@ -33,7 +43,7 @@ public class ObstaclePool : MonoBehaviour, IInitializableComponent<GameObject>
 
     protected void DisableObjectAbroadScreen()
     {
-        Vector3 disablePoint = _camera.ViewportToWorldPoint(new Vector3(-10f, -10f, 0));
+        Vector3 disablePoint = _camera.ViewportToWorldPoint(new Vector2(0, -7f));
 
         foreach (var item in _pool)
         {

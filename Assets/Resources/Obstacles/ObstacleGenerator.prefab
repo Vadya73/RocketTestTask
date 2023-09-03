@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5447363685790841761
 MonoBehaviour:
@@ -44,8 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3662dbaafdfa47abaf7b9cdd5ee0f462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _capacity: 5
-  _obstaclePrefab: {fileID: 0}
-  _minSpawnPositionY: 0
-  _maxSpawnPositionY: 0
-  _spawnRate: 0
+  _capacity: 15
+  _obstaclePrefab: {fileID: 3622513694229904255, guid: edc18efee7ded3448950a23b28b1f124, type: 3}
+  _minSpawnPositionX: -10
+  _maxSpawnPositionX: 10
+  _minSpawnPositionY: 5
+  _maxSpawnPositionY: 10
+  _spawnRate: 2
+  _target: {fileID: 0}

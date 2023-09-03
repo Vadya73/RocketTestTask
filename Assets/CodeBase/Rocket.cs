@@ -1,6 +1,7 @@
 using CodeBase;
 using CodeBase.Interfaces;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour, IInitializable, IDamagable
 {
@@ -10,6 +11,7 @@ public class Rocket : MonoBehaviour, IInitializable, IDamagable
     [SerializeField] private float _currentFuel;
     [SerializeField] private float _fuelConsumptionRate = 10f;
     [SerializeField] private float _health = 100f;
+    [SerializeField] private float _damageMultiplier = .1f;
 
     private RocketMover _rocketMover;
 
@@ -23,21 +25,27 @@ public class Rocket : MonoBehaviour, IInitializable, IDamagable
     public void Initialize()
     {
         _currentFuel = _maxFuel;
+        _rocketMover = GetComponent<RocketMover>();
     }
 
     public void ApplyDamage(int value)
     {
-        if (_health - value <= 0)
+        float absoluteSpeedSum = Mathf.Abs(_rocketMover.CurrentSpeed.x) + Mathf.Abs(_rocketMover.CurrentSpeed.y);
+        int damage = Mathf.RoundToInt(value * _damageMultiplier * absoluteSpeedSum);
+
+
+        if (_health - damage <= 0)
         {
             Explode();
             _health = 0;
         }
-        
-        _health -= value;
+        _health -= damage;
+        Debug.Log($"Rocket hit damage: {damage} Current health: {_health}");
     }
 
     private void Explode()
     {
         Debug.Log("Explode");
+        SceneManager.LoadScene(0);
     }
 }

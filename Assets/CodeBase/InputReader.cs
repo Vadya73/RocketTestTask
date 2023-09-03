@@ -4,19 +4,36 @@ using UnityEngine;
 
 public class InputReader : MonoBehaviour, IInitializable
 {
-    private RocketMover _rocketMover;
+    [SerializeField] private RocketMover _rocketMover;
+
+    private float _rotateValue;
+    private bool _canMove;
+    private const string Player = "Player";
     
     public void Initialize()
     {
-        _rocketMover = GetComponent<RocketMover>();
+        if (_rocketMover == null)
+            _rocketMover = GameObject.FindWithTag(Player).GetComponent<RocketMover>();
     }
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Space)) 
-            _rocketMover.CanMove = true;
+        if (_rotateValue != 0)
+            TryRotate(_rotateValue);
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) 
-            _rocketMover.RotateByZ(Input.GetAxis("Horizontal"));
+        if (_canMove)
+            TryMove(_canMove);
+    }
+
+    public void TryMove(bool value)
+    {
+        _canMove = value;
+        _rocketMover.CanMove = _canMove;
+    }
+
+    public void TryRotate(float value)
+    {
+        _rotateValue = value;
+        _rocketMover.RotateByZ(_rotateValue);
     }
 }
